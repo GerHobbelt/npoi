@@ -69,7 +69,7 @@ namespace GenerateXlsFromXlsTemplate
             //Write the stream data of workbook to the root directory
             FileStream file = new FileStream(@"test.xls", FileMode.Create);
             hssfworkbook.Write(file);
-            file.Close();
+            //file.Close();
         }
 
         static void InitializeWorkbook()

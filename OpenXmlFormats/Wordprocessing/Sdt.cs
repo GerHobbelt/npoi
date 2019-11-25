@@ -3247,7 +3247,7 @@ namespace NPOI.OpenXmlFormats.Wordprocessing
                 return null;
             CT_SdtText ctObj = new CT_SdtText();
             if (node.Attributes["w:multiLine"] != null)
-                ctObj.multiLine = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:multiLine"].Value,true);
+                ctObj.multiLine = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:multiLine"].Value);
             return ctObj;
         }
 

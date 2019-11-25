@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NPOI.OpenXmlFormats</RootNamespace>
-    <AssemblyName>NPOI.OpenXmlFormats</AssemblyName>
+    <AssemblyName>NPOI.OpenXmlFormats.net2</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
@@ -33,20 +33,21 @@
     </TargetFrameworkProfile>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>npoi.snk</AssemblyOriginatorKeyFile>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\solution\Lib\</OutputPath>
+    <OutputPath>..\solution\Lib\.net2\</OutputPath>
     <DefineConstants>DEBUG;TRACE;HIDE_UNREACHABLE_CODE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>BasicCorrectnessRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>..\solution\Lib\.net2\NPOI.OpenXmlFormats.net2.XML</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -82,11 +83,16 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NPOI.OpenXml4Net.net2">
+      <HintPath>..\solution\Lib\.net2\NPOI.OpenXml4Net.net2.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Drawing\Chart\Chart_net2.cs" />
+    <Compile Include="Shared\IOMathContainer.cs" />
     <Compile Include="Spreadsheet\PivotTable\CT_PivotCacheRecords.cs" />
     <Compile Include="Drawing\ChartDrawing.cs" />
     <Compile Include="Drawing\Chart\ChartSpaceDocument.cs" />
@@ -104,7 +110,6 @@
     <Compile Include="Drawing\DiagramElementPropertySet.cs" />
     <Compile Include="Drawing\DiagramLayoutVariables.cs" />
     <Compile Include="Drawing\DiagramStyleDefinition.cs" />
-    <Compile Include="Drawing\Chart\Chart.cs" />
     <Compile Include="Drawing\Gvml.cs" />
     <Compile Include="Drawing\AudioVideo.cs" />
     <Compile Include="Drawing\GraphicalObjectFormat.cs" />
@@ -266,7 +271,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="npoi.snk" />
-  </ItemGroup>  
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
@@ -283,12 +288,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\openxml4Net\NPOI.OpenXml4Net.net2.csproj">
-      <Project>{c9f265b7-ece3-4755-b0b1-79536575c2a9}</Project>
-      <Name>NPOI.OpenXml4Net.net2</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

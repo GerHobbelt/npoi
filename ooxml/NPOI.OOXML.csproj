@@ -93,6 +93,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\solution\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="NPOI, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\solution\Lib\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\solution\Lib\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats, Version=2.4.1.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\solution\Lib\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -330,20 +342,6 @@
     <Compile Include="XWPF\Usermodel\XWPFTableCell.cs" />
     <Compile Include="XWPF\Usermodel\XWPFTableRow.cs" />
     <Compile Include="Util\EnumConverter.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\main\NPOI.csproj">
-      <Project>{10FA8538-157A-4380-A4F6-8E2C3EE92CAE}</Project>
-      <Name>NPOI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\openxml4Net\NPOI.OpenXml4Net.csproj">
-      <Project>{c9f265b7-ece3-4755-b0b1-79536575c2a9}</Project>
-      <Name>NPOI.OpenXml4Net</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenXmlFormats\NPOI.OpenXmlFormats.csproj">
-      <Project>{a6874784-2875-4f40-9e8f-8385a640f5d6}</Project>
-      <Name>NPOI.OpenXmlFormats</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

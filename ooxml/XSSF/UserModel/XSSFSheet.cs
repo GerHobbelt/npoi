@@ -1085,7 +1085,7 @@ namespace NPOI.XSSF.UserModel
         {
             get
             {
-                return _rows.Count == 0 ? 0 : GetLastKey(_rows.Keys);
+                return _rows.Count == 0 ? -1 : GetLastKey(_rows.Keys);
             }
         }
 
@@ -2887,9 +2887,6 @@ namespace NPOI.XSSF.UserModel
                 map.Add(r.RowNum, r);
             }
             _rows = map;
-
-            // Sort CTRows by index asc.
-            worksheet.sheetData.row.Sort((row1, row2) => row1.r.CompareTo(row2.r));
         }
         private class ShiftCommentComparator : IComparer<XSSFComment>
         {

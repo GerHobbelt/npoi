@@ -394,14 +394,14 @@ namespace NPOI.OpenXmlFormats.Wordprocessing
                 return null;
             CT_LatentStyles ctObj = new CT_LatentStyles();
             if (node.Attributes["w:defLockedState"] != null)
-                ctObj.defLockedState = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:defLockedState"].Value,true);
+                ctObj.defLockedState = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:defLockedState"].Value);
             ctObj.defUIPriority = XmlHelper.ReadString(node.Attributes["w:defUIPriority"]);
             if (node.Attributes["w:defSemiHidden"] != null)
-                ctObj.defSemiHidden = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:defSemiHidden"].Value,true);
+                ctObj.defSemiHidden = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:defSemiHidden"].Value);
             if (node.Attributes["w:defUnhideWhenUsed"] != null)
-                ctObj.defUnhideWhenUsed = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:defUnhideWhenUsed"].Value,true);
+                ctObj.defUnhideWhenUsed = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:defUnhideWhenUsed"].Value);
             if (node.Attributes["w:defQFormat"] != null)
-                ctObj.defQFormat = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:defQFormat"].Value,true);
+                ctObj.defQFormat = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:defQFormat"].Value);
             ctObj.count = XmlHelper.ReadString(node.Attributes["w:count"]);
             ctObj.lsdException = new List<CT_LsdException>();
             foreach (XmlNode childNode in node.ChildNodes)
@@ -696,9 +696,9 @@ namespace NPOI.OpenXmlFormats.Wordprocessing
                 ctObj.type = (ST_StyleType)Enum.Parse(typeof(ST_StyleType), node.Attributes["w:type"].Value);
             ctObj.styleId = XmlHelper.ReadString(node.Attributes["w:styleId"]);
             if (node.Attributes["w:default"] != null)
-                ctObj.@default = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:default"].Value,true);
+                ctObj.@default = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:default"].Value);
             if (node.Attributes["w:customStyle"] != null)
-                ctObj.customStyle = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:customStyle"].Value,true);
+                ctObj.customStyle = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:customStyle"].Value);
             ctObj.tblStylePr = new List<CT_TblStylePr>();
             foreach (XmlNode childNode in node.ChildNodes)
             {
@@ -2293,9 +2293,9 @@ namespace NPOI.OpenXmlFormats.Wordprocessing
             ctObj.sz = XmlHelper.ReadULong(node.Attributes["w:sz"]);
             ctObj.space = XmlHelper.ReadULong(node.Attributes["w:space"]);
             if (node.Attributes["w:shadow"] != null)
-                ctObj.shadow = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:shadow"].Value,true);
+                ctObj.shadow = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:shadow"].Value);
             if (node.Attributes["w:frame"] != null)
-                ctObj.frame = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:frame"].Value,true);
+                ctObj.frame = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:frame"].Value);
             return ctObj;
         }
 
@@ -2583,7 +2583,7 @@ namespace NPOI.OpenXmlFormats.Wordprocessing
         triple,
 
         /// <summary>
-        /// Thin, Thick Line Border<
+        /// Thin, Thick Line Border
         /// </summary>
         thinThickSmallGap,
 

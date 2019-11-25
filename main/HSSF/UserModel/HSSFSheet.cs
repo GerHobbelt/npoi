@@ -75,7 +75,7 @@ namespace NPOI.HSSF.UserModel
         public InternalWorkbook book;
         protected HSSFWorkbook _workbook;
         private int firstrow;
-        private int lastrow;
+        private int lastrow = -1;
         //private static POILogger log = POILogFactory.GetLogger(typeof(HSSFSheet));
 
         /// <summary>
@@ -341,7 +341,7 @@ namespace NPOI.HSSF.UserModel
         {
             if (lastrow < 1)
             {
-                return 0;
+                return -1;
             }
 
             int rownum = lastrow - 1;

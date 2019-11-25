@@ -2,7 +2,6 @@
 using NPOI.XWPF.UserModel;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace NPOI.XWPF.Usermodel

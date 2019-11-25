@@ -518,13 +518,13 @@ namespace NPOI.OpenXmlFormats.Wordprocessing
             CT_EastAsianLayout ctObj = new CT_EastAsianLayout();
             ctObj.id = XmlHelper.ReadString(node.Attributes["r:id"]);
             if (node.Attributes["w:combine"] != null)
-                ctObj.combine = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:combine"].Value,true);
+                ctObj.combine = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:combine"].Value);
             if (node.Attributes["w:combineBrackets"] != null)
                 ctObj.combineBrackets = (ST_CombineBrackets)Enum.Parse(typeof(ST_CombineBrackets), node.Attributes["w:combineBrackets"].Value);
             if (node.Attributes["w:vert"] != null)
-                ctObj.vert = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:vert"].Value,true);
+                ctObj.vert = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:vert"].Value);
             if (node.Attributes["w:vertCompress"] != null)
-                ctObj.vertCompress = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:vertCompress"].Value,true);
+                ctObj.vertCompress = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:vertCompress"].Value);
             return ctObj;
         }
 
@@ -1749,9 +1749,9 @@ namespace NPOI.OpenXmlFormats.Wordprocessing
             CT_SimpleField ctObj = new CT_SimpleField();
             ctObj.instr = XmlHelper.ReadString(node.Attributes["w:instr"]);
             if (node.Attributes["w:fldLock"] != null)
-                ctObj.fldLock = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:fldLock"].Value,true);
+                ctObj.fldLock = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:fldLock"].Value);
             if (node.Attributes["w:dirty"] != null)
-                ctObj.dirty = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:dirty"].Value,true);
+                ctObj.dirty = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:dirty"].Value);
             foreach (XmlNode childNode in node.ChildNodes)
             {
                 if (childNode.LocalName == "subDoc")
@@ -2329,7 +2329,7 @@ namespace NPOI.OpenXmlFormats.Wordprocessing
             ctObj.tooltip = XmlHelper.ReadString(node.Attributes["w:tooltip"]);
             ctObj.docLocation = XmlHelper.ReadString(node.Attributes["w:docLocation"]);
             if (node.Attributes["w:history"] != null)
-                ctObj.history = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:history"].Value,true);
+                ctObj.history = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:history"].Value);
             ctObj.anchor = XmlHelper.ReadString(node.Attributes["w:anchor"]);
             ctObj.id = XmlHelper.ReadString(node.Attributes["r:id"]);
 

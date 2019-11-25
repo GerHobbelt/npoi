@@ -1301,7 +1301,7 @@ namespace NPOI.OpenXmlFormats.Wordprocessing
             ctObj.ilvl = XmlHelper.ReadString(node.Attributes["w:ilvl"]);
             ctObj.tplc = XmlHelper.ReadBytes(node.Attributes["w:tplc"]);
             if (node.Attributes["w:tentative"] != null)
-                ctObj.tentative = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:tentative"].Value,true);
+                ctObj.tentative = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:tentative"].Value);
             foreach (XmlNode childNode in node.ChildNodes)
             {
                 if (childNode.LocalName == "start")
@@ -1654,7 +1654,7 @@ namespace NPOI.OpenXmlFormats.Wordprocessing
             CT_LevelText ctObj = new CT_LevelText();
             ctObj.val = XmlHelper.ReadString(node.Attributes["w:val"]);
             if (node.Attributes["w:null"]!=null)
-                ctObj.@null = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:null"].Value,true);
+                ctObj.@null = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:null"].Value);
             return ctObj;
         }
 
@@ -1734,7 +1734,7 @@ namespace NPOI.OpenXmlFormats.Wordprocessing
                 return null;
             CT_LvlLegacy ctObj = new CT_LvlLegacy();
             if (node.Attributes["w:legacy"] != null)
-                ctObj.legacy = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:legacy"].Value,true);
+                ctObj.legacy = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:legacy"].Value);
             ctObj.legacySpace = XmlHelper.ReadULong(node.Attributes["w:legacySpace"]);
             ctObj.legacyIndent = XmlHelper.ReadString(node.Attributes["w:legacyIndent"]);
             return ctObj;
@@ -1858,14 +1858,14 @@ namespace NPOI.OpenXmlFormats.Wordprocessing
             CT_LsdException ctObj = new CT_LsdException();
             ctObj.name = XmlHelper.ReadString(node.Attributes["w:name"]);
             if (node.Attributes["w:locked"] != null)
-                ctObj.locked = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:locked"].Value,true);
+                ctObj.locked = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:locked"].Value);
             ctObj.uiPriority = XmlHelper.ReadString(node.Attributes["w:uiPriority"]);
             if (node.Attributes["w:semiHidden"] != null)
-                ctObj.semiHidden = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:semiHidden"].Value,true);
+                ctObj.semiHidden = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:semiHidden"].Value);
             if (node.Attributes["w:unhideWhenUsed"] != null)
-                ctObj.unhideWhenUsed = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:unhideWhenUsed"].Value,true);
+                ctObj.unhideWhenUsed = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:unhideWhenUsed"].Value);
             if (node.Attributes["w:qFormat"] != null)
-                ctObj.qFormat = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:qFormat"].Value,true);
+                ctObj.qFormat = (ST_OnOff)Enum.Parse(typeof(ST_OnOff), node.Attributes["w:qFormat"].Value);
             return ctObj;
         }
 
