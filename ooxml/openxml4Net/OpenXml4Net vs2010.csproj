@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NPOI.OpenXml4Net</RootNamespace>
-    <AssemblyName>NPOI.OpenXml4Net</AssemblyName>
+    <AssemblyName>systembase.NPOI.OpenXml4Net</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
@@ -47,7 +47,7 @@
     <CodeAnalysisRuleSet>BasicCorrectnessRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
     <RunCodeAnalysis>false</RunCodeAnalysis>
-    <DocumentationFile>..\..\solution\Lib\NPOI.OpenXml4Net.XML</DocumentationFile>
+    <DocumentationFile>..\..\solution\Lib\systembase.NPOI.OpenXml4Net.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -71,7 +71,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>BasicCorrectnessRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>..\..\solution\Lib\.net4\NPOI.OpenXml4Net.XML</DocumentationFile>
+    <DocumentationFile>..\..\solution\Lib\.net4\systembase.NPOI.OpenXml4Net.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '.net 2 Release|AnyCPU'">
     <OutputPath>..\..\solution\Lib\.net2\</OutputPath>
@@ -82,7 +82,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>BasicCorrectnessRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>..\..\solution\Lib\.net2\NPOI.OpenXml4Net.XML</DocumentationFile>
+    <DocumentationFile>..\..\solution\Lib\.net2\systembase.NPOI.OpenXml4Net.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib">

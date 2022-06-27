@@ -12,14 +12,14 @@ of the namespaces.
 This Mapping shows
 using <the C# namespace>; // <abbreviation on schemacentral.com> - <Namespace in OOXML xsd file>
 
-using NPOI.OpenXmlFormats.Spreadsheet;     // ssml        - http://schemas.openxmlformats.org/spreadsheetml/2006/main
+using jp.co.systembase.NPOI.OpenXmlFormats.Spreadsheet;     // ssml        - http://schemas.openxmlformats.org/spreadsheetml/2006/main
 
-using NPOI.OpenXmlFormats.Dml;             // a           - http://schemas.openxmlformats.org/drawingml/2006/main
-using NPOI.OpenXmlFormats.Dml.Picture;     // draw-pic    - http://schemas.openxmlformats.org/drawingml/2006/picture
-using NPOI.OpenXmlFormats.Dml.Spreadsheet; // draw-ssdraw - http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing
+using jp.co.systembase.NPOI.OpenXmlFormats.Dml;             // a           - http://schemas.openxmlformats.org/drawingml/2006/main
+using jp.co.systembase.NPOI.OpenXmlFormats.Dml.Picture;     // draw-pic    - http://schemas.openxmlformats.org/drawingml/2006/picture
+using jp.co.systembase.NPOI.OpenXmlFormats.Dml.Spreadsheet; // draw-ssdraw - http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing
 
-using NPOI.OpenXmlFormats.Vml;                // v    - urn:schemas-microsoft-com:vml
-using NPOI.OpenXmlFormats.Vml.Office;         // o    - urn:schemas-microsoft-com:office:office
-using NPOI.OpenXmlFormats.Vml.Spreadsheet;    // x    - urn:schemas-microsoft-com:office:excel
-using NPOI.OpenXmlFormats.Vml.Presentation;   // ppt  - urn:schemas-microsoft-com:office:powerpoint
-using NPOI.OpenXmlFormats.Vml.Wordprocessing; // wvml - urn:schemas-microsoft-com:office:word
+using jp.co.systembase.NPOI.OpenXmlFormats.Vml;                // v    - urn:schemas-microsoft-com:vml
+using jp.co.systembase.NPOI.OpenXmlFormats.Vml.Office;         // o    - urn:schemas-microsoft-com:office:office
+using jp.co.systembase.NPOI.OpenXmlFormats.Vml.Spreadsheet;    // x    - urn:schemas-microsoft-com:office:excel
+using jp.co.systembase.NPOI.OpenXmlFormats.Vml.Presentation;   // ppt  - urn:schemas-microsoft-com:office:powerpoint
+using jp.co.systembase.NPOI.OpenXmlFormats.Vml.Wordprocessing; // wvml - urn:schemas-microsoft-com:office:word

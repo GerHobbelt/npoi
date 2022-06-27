@@ -15,11 +15,11 @@
    limitations Under the License.
 ==================================================================== */
 
-namespace NPOI.HSSF.EventModel
+namespace jp.co.systembase.NPOI.HSSF.EventModel
 {
     using System;
     using System.IO;
-    using NPOI.HSSF.Model;
+    using jp.co.systembase.NPOI.HSSF.Model;
 
     /**
      * ModelFactoryListener Is registered with the 

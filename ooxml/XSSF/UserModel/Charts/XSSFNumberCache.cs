@@ -15,12 +15,12 @@
    limitations under the License.
 ==================================================================== */
 
-using NPOI.SS.Util;
-using NPOI.SS.Util.CellWalk;
-using NPOI.SS.UserModel;
+using jp.co.systembase.NPOI.SS.Util;
+using jp.co.systembase.NPOI.SS.Util.CellWalk;
+using jp.co.systembase.NPOI.SS.UserModel;
 using System;
-using NPOI.OpenXmlFormats.Dml.Chart;
-namespace NPOI.XSSF.UserModel.Charts
+using jp.co.systembase.NPOI.OpenXmlFormats.Dml.Chart;
+namespace jp.co.systembase.NPOI.XSSF.UserModel.Charts
 {
 
     /**
