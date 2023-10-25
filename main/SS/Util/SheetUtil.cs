@@ -548,8 +548,9 @@ namespace NPOI.SS.Util
             else
                 actualWidth = Math.Round(sf.Width, 0, MidpointRounding.ToEven);
 
-            int border = 1;
-            width = Math.Max(width, ((actualWidth + border) / colspan / defaultCharWidth) + cell.CellStyle.Indention);
+            int padding = 5;
+            double correction = 1.05;
+            width = Math.Max(width, ((actualWidth + padding) / colspan / defaultCharWidth * correction) + cell.CellStyle.Indention);
             return width;
         }
 
