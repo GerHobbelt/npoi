@@ -1921,34 +1921,45 @@ namespace NPOI.XWPF.UserModel
                 }
             }
         }
-        public void FindAndReplaceText(XWPFDocument doc, string oldValue, string newValue)
+
+        private void FindAndReplaceTextInTable(XWPFTable table, string oldValue, string newValue)
         {
-            foreach (var paragraph in doc.Paragraphs)
+            foreach (var row in table.Rows)
+            {
+                foreach (var cell in row.GetTableCells())
+                {
+                    foreach (var innerTable in cell.Tables)
+                    {
+                        FindAndReplaceTextInTable(innerTable, oldValue, newValue);
+                    }
+                    foreach (var paragraph in cell.Paragraphs)
+                    {
+                        FindAndReplaceTextInParagraph(paragraph, oldValue, newValue);
+                    }
+                }
+            }
+        }
+
+        public void FindAndReplaceText(string oldValue, string newValue)
+        {
+            foreach (var paragraph in this.Paragraphs)
             {
                 FindAndReplaceTextInParagraph(paragraph, oldValue, newValue);
             }
 
-            foreach (var table in doc.Tables)
+            foreach (var table in this.Tables)
             {
-                foreach (var row in table.Rows)
-                {
-                    foreach (var cell in row.GetTableCells())
-                    {
-                        foreach (var paragraph in cell.Paragraphs)
-                        {
-                            FindAndReplaceTextInParagraph(paragraph, oldValue, newValue);
-                        }
-                    }
-                }
+                FindAndReplaceTextInTable(table, oldValue, newValue);
             }
-            foreach (var footer in doc.FooterList)
+            
+            foreach (var footer in this.FooterList)
             {
                 foreach (var paragraph in footer.Paragraphs)
                 {
                     FindAndReplaceTextInParagraph(paragraph, oldValue, newValue);
                 }
             }
-            foreach (var header in doc.HeaderList)
+            foreach (var header in this.HeaderList)
             {
                 foreach (var paragraph in header.Paragraphs)
                 {
