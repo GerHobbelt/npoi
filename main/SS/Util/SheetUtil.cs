@@ -369,11 +369,7 @@ namespace NPOI.SS.Util
 
         private static double GetCellConetntHeight(double actualHeight, int numberOfRowsInMergedRegion)
         {
-            var correction = 1.1;
-            int width = (int)(actualHeight / numberOfRowsInMergedRegion * correction);
-            var height = Math.Max(-1, width);
-
-            return height * 72 / dpi;
+            return Math.Max(-1, actualHeight / numberOfRowsInMergedRegion);
         }
 
         private static string GetCellStringValue(ICell cell)
@@ -422,7 +418,7 @@ namespace NPOI.SS.Util
         private static double GetRotatedContentHeight(ICell cell, string stringValue, Font windowsFont)
         {
             var angle = cell.CellStyle.Rotation * 2.0 * Math.PI / 360.0;
-            var measureResult = TextMeasurer.MeasureSize(stringValue, new TextOptions(windowsFont) { Dpi = dpi });
+            var measureResult = TextMeasurer.MeasureAdvance(stringValue, new TextOptions(windowsFont) { Dpi = dpi });
 
             var x1 = Math.Abs(measureResult.Height * Math.Cos(angle));
             var x2 = Math.Abs(measureResult.Width * Math.Sin(angle));
@@ -432,7 +428,7 @@ namespace NPOI.SS.Util
 
         private static double GetContentHeight(string stringValue, Font windowsFont)
         {
-            var measureResult = TextMeasurer.MeasureSize(stringValue, new TextOptions(windowsFont) { Dpi = dpi });
+            var measureResult = TextMeasurer.MeasureAdvance(stringValue, new TextOptions(windowsFont) { Dpi = dpi });
             
             return Math.Round(measureResult.Height, 0, MidpointRounding.ToEven);
         }
@@ -547,8 +543,8 @@ namespace NPOI.SS.Util
             else
                 actualWidth = Math.Round(sf.Width, 0, MidpointRounding.ToEven);
 
-            int padding = 5;
-            width = Math.Max(width, ((actualWidth + padding) / colspan / defaultCharWidth) + cell.CellStyle.Indention);
+            int border = 1;
+            width = Math.Max(width, ((actualWidth + border) / colspan / defaultCharWidth) + cell.CellStyle.Indention);
             return width;
         }
 
