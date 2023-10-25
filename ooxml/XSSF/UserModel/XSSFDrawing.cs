@@ -284,9 +284,11 @@ namespace NPOI.XSSF.UserModel
          */
         public XSSFConnector CreateConnector(XSSFClientAnchor anchor)
         {
+            long shapeId = newShapeId();
             CT_TwoCellAnchor ctAnchor = CreateTwoCellAnchor(anchor);
             CT_Connector ctShape = ctAnchor.AddNewCxnSp();
             ctShape.Set(XSSFConnector.Prototype());
+            ctShape.nvCxnSpPr.cNvPr.id = (uint)(shapeId);
 
             XSSFConnector shape = new XSSFConnector(this, ctShape);
             shape.anchor = anchor;
@@ -303,9 +305,11 @@ namespace NPOI.XSSF.UserModel
          */
         public XSSFShapeGroup CreateGroup(XSSFClientAnchor anchor)
         {
+            long shapeId = newShapeId();
             CT_TwoCellAnchor ctAnchor = CreateTwoCellAnchor(anchor);
             CT_GroupShape ctGroup = ctAnchor.AddNewGrpSp();
             ctGroup.Set(XSSFShapeGroup.Prototype());
+            ctGroup.nvGrpSpPr.cNvPr.id = (uint)(shapeId);
 
             XSSFShapeGroup shape = new XSSFShapeGroup(this, ctGroup);
             shape.anchor = anchor;
