@@ -152,12 +152,13 @@ namespace NPOI.XSSF.UserModel
             get
             {
                 CT_SheetFormatPr pr = worksheet.sheetFormatPr;
-                return pr == null ? 8 : pr.defaultColWidth;
+                return (pr == null || pr.defaultColWidth == 0.0) ? 8.43 : pr.defaultColWidth;
             }
             set
             {
                 var pr = GetSheetTypeSheetFormatPr();
                 pr.defaultColWidth = value;
+                pr.baseColWidth = 0;
             }
         }
 
@@ -2029,10 +2030,27 @@ namespace NPOI.XSSF.UserModel
         public double GetColumnWidth(int columnIndex)
         {
             CT_Col col = columnHelper.GetColumn(columnIndex, false);
-            double width = (col == null || !col.IsSetWidth())
-                ? DefaultColumnWidth
-                : col.width;
-            return width * 256;
+
+            double width = 0;
+
+            if (col != null && col.IsSetWidth())
+                width = col.width;
+            else
+            {
+                CT_SheetFormatPr pr = worksheet.sheetFormatPr;
+                if (pr != null)
+                {
+                    if (pr.defaultColWidth != 0.0)
+                        width = pr.defaultColWidth;
+                    else if (pr.baseColWidth != 0)
+                        width = pr.baseColWidth + 5; 
+                }
+
+                if (width == 0)
+                    width = DefaultColumnWidth;
+            }
+
+            return Math.Round(width * 256, 2);
         }
 
         /// <summary>
@@ -5960,12 +5978,13 @@ namespace NPOI.XSSF.UserModel
             double fontwidth;
             double width_px;
 
-            var width = worksheet.sheetFormatPr.defaultColWidth;                        //string length with padding
+            var width = worksheet.sheetFormatPr.defaultColWidth; //string length with padding
             if (width != 0.0)
             {
-                width_px = width * MaximumDigitWidth;
+                double widthInPx = width * MaximumDigitWidth;
+                width_px = widthInPx + (8 - widthInPx % 8); // round up to the nearest multiple of 8 pixels
             }
-            else
+            else if (worksheet.sheetFormatPr.baseColWidth != 0)
             {
                 double MDW = MaximumDigitWidth;
                 var length = worksheet.sheetFormatPr.baseColWidth;                      //string length with out padding
@@ -5973,6 +5992,12 @@ namespace NPOI.XSSF.UserModel
                 double tmp = 256 * fontwidth + Math.Truncate(128 / MDW);
                 width_px = Math.Truncate((tmp / 256) * MDW) + 3;                        // +3 ???
             }
+            else
+            {
+                double widthInPx = DefaultColumnWidth * MaximumDigitWidth;
+                width_px = widthInPx + (8 - widthInPx % 8); // round up to the nearest multiple of 8 pixels
+            }
+
             return width_px;
         }
 
@@ -6055,7 +6080,7 @@ namespace NPOI.XSSF.UserModel
                         }
                     }
                 }
-            lblforbreak:
+                lblforbreak:
                 int EMUwidth = Units.PixelToEMU((int)Math.Round(width_px, 1));
                 if (x >= EMUwidth)
                 {
