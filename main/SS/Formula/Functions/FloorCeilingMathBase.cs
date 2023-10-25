@@ -16,37 +16,30 @@
  *    limitations under the License.
  * ====================================================================
  */
+using ExtendedNumerics;
 using NPOI.SS.Formula.Eval;
+using NPOI.SS.Util;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NPOI.SS.Formula.Functions
 {
     public abstract class FloorCeilingMathBase : FreeRefFunction
     {
         // Excel has an internal precision of 15 significant digits
-        private const int SignificantThreshold = 15;
+        private const int SignificantDigits = 15;
+        // Use high-precision decimal calculations or customized double workaround
+        private const bool UseHighPrecisionCalculation = true;
+        private const int SignificantDigitsForHighPrecision = SignificantDigits + 2;
 
         public ValueEval Evaluate(ValueEval[] args, OperationEvaluationContext ec)
             => args.Length switch
             {
-                1 => Evaluate(ec.RowIndex, ec.ColumnIndex, args[0]),
-                2 => Evaluate(ec.RowIndex, ec.ColumnIndex, args[0], args[1]),
+                1 => Evaluate(ec.RowIndex, ec.ColumnIndex, args[0], null, null),
+                2 => Evaluate(ec.RowIndex, ec.ColumnIndex, args[0], args[1], null),
                 3 => Evaluate(ec.RowIndex, ec.ColumnIndex, args[0], args[1], args[2]),
                 _ => ErrorEval.VALUE_INVALID
             };
-        private ValueEval Evaluate(int srcRowIndex, int srcColumnIndex, ValueEval arg0)
-        {
-            return Evaluate(srcRowIndex, srcColumnIndex, arg0, null, null);
-        }
-        private ValueEval Evaluate(int srcRowIndex, int srcColumnIndex, ValueEval arg0, ValueEval arg1)
-        {
-            return Evaluate(srcRowIndex, srcColumnIndex, arg0, arg1, null);
-        }
         private ValueEval Evaluate(int srcRowIndex, int srcColumnIndex, ValueEval arg0, ValueEval arg1, ValueEval arg2)
         {
             try
@@ -86,10 +79,28 @@ namespace NPOI.SS.Formula.Functions
                 significance = -significance;
             }
 
-            // Workaround without BigDecimal
-            var numberToTest = number / significance;
-            if (DoublePrecisionHelper.IsIntegerWithDigitsDropped(numberToTest, SignificantThreshold))
-                return number;
+            double numberToTest = number / significance;
+
+            if (UseHighPrecisionCalculation)
+            {
+                BigDecimal.Precision = SignificantDigitsForHighPrecision;
+
+                var bigNumber = new BigDecimal(number);
+                var bigSignificance = new BigDecimal(significance);
+
+                BigDecimal bigNumberToTest = bigNumber / bigSignificance;
+
+                if (bigNumberToTest.IsIntegerWithDigitsDropped(SignificantDigits))
+                    return number;
+
+                // High-precision number is only for integer determination. We don't need it later.
+            }
+            else
+            {
+                // Workaround without BigDecimal
+                if (numberToTest.IsIntegerWithDigitsDropped(SignificantDigits))
+                    return number;
+            }
 
             if (number > 0)
             {

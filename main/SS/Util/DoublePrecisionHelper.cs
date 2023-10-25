@@ -16,6 +16,7 @@
  *    limitations under the License.
  * ====================================================================
  */
+using ExtendedNumerics;
 using NPOI.SS.Formula.UDF;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NPOI.SS.Formula.Functions
+namespace NPOI.SS.Util
 {
     internal static class DoublePrecisionHelper
     {
@@ -50,9 +51,42 @@ namespace NPOI.SS.Formula.Functions
             return isNegative ? -newNumber : newNumber;
         }
 
-        public static bool IsIntegerWithDigitsDropped(double number, int significantDigits)
+        public static bool IsIntegerWithDigitsDropped(this double number, int significantDigits)
         {
             return Math.Abs(GetFractionPart(DropDigitsAfterSignificantOnes(number, significantDigits))) == 0.0;
+        }
+
+        public static bool IsIntegerWithDigitsDropped(this BigDecimal number, int significantDigits)
+        {
+            if (number.IsZero())
+                return true;
+
+            if (number.IsNegative())
+                number = -number;
+
+            int decimalPlaces = number.DecimalPlaces;
+            int realSigDigits = number.SignifigantDigits;
+            int integerPlaces = realSigDigits - decimalPlaces;
+
+            if (integerPlaces >= significantDigits)
+            {
+                return true;
+            }
+
+            BigDecimal fracPart = number.GetFractionalPart();
+
+            if (fracPart.IsZero())
+            {
+                return true;
+            }
+
+            decimalPlaces = Math.Min(decimalPlaces, significantDigits - integerPlaces);
+
+            BigDecimal exp = BigDecimal.Pow(10, decimalPlaces);
+            fracPart *= exp;
+            fracPart = BigDecimal.Round(fracPart);
+
+            return fracPart.IsZero() || fracPart == exp;
         }
     }
 }
