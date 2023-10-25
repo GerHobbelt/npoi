@@ -2079,6 +2079,7 @@ namespace TestCases.XSSF.UserModel
                 cell.CellComment = comment;
             }
         }
+
         [Test]
         public void TestCoordinate()
         {
@@ -2141,6 +2142,36 @@ namespace TestCases.XSSF.UserModel
                 sheet.SetColumnWidth(0, 100);
                 Assert.AreEqual(sheet.GetColumnWidth(0), 100);
                 Assert.AreNotEqual(sheet.GetColumnWidth(0) / 256, sheet.DefaultColumnWidth);
+            }
+        }
+
+
+        [Test]
+        public void TestCopyRepeatingRowsAndColumns()
+        {
+            using (var book = new XSSFWorkbook())
+            {
+                var sheet = book.CreateSheet("Sheet1");
+                
+                var row1 = sheet.CreateRow(0);
+                row1.CreateCell(0);
+
+                var row2 = sheet.CreateRow(1);
+                row2.CreateCell(0);
+
+                sheet.RepeatingRows = CellRangeAddress.ValueOf("1:1");
+                sheet.RepeatingColumns = CellRangeAddress.ValueOf("A1:B1");
+
+                var clonedSheet = book.CloneSheet(0);
+
+                Assert.IsNotNull(clonedSheet.RepeatingRows, "RepeatingRows is null");
+                Assert.AreEqual(clonedSheet.RepeatingRows.FirstRow, sheet.RepeatingRows.FirstRow, "RepeatingRows.FirstRow are not equal");
+                Assert.AreEqual(clonedSheet.RepeatingRows.LastRow, sheet.RepeatingRows.LastRow, "RepeatingRows.LastRow are not equal");
+
+                Assert.IsNotNull(clonedSheet.RepeatingColumns, "RepeatingColumns is null");
+                Assert.AreEqual(clonedSheet.RepeatingColumns.FirstColumn, sheet.RepeatingColumns.FirstColumn, "RepeatingColumns.FirstColumn are not equal");
+                Assert.AreEqual(clonedSheet.RepeatingColumns.LastColumn, sheet.RepeatingColumns.LastColumn, "RepeatingColumns.LastColumn are not equal");
+
             }
         }
     }
