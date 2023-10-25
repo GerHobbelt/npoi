@@ -39,6 +39,7 @@ namespace NPOI.XSSF.UserModel
          */
         protected XSSFDrawing drawing;
 
+        protected IEG_Anchor IEGanchor;
         /**
          * The parent shape, always not-null for shapes in groups
          */
@@ -78,6 +79,27 @@ namespace NPOI.XSSF.UserModel
             return anchor;
         }
 
+        public IEG_Anchor cellanchor
+        {
+            get
+            {
+                if(IEGanchor == null) {
+                    return parent.cellanchor;
+                }
+                return IEGanchor;
+            }
+            set
+            {
+                if(parent == null)
+                {
+                    IEGanchor = value;
+                }
+                else
+                {
+                    parent.cellanchor = value;
+                }
+            }
+        }
         /**
          * Returns xml bean with shape properties.
          *
