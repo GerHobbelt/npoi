@@ -308,23 +308,16 @@ namespace TestCases.POIFS.Macros
             POITestCase.AssertContains(content, testMacroNoSub);
         }
 
-        [Ignore("by poi")]
         [Test]
         public void Bug59830()
         {
-            // This file is intentionally omitted from the test-data directory
-            // unless we can extract the vbaProject.bin from this Word 97-2003 file
-            // so that it's less likely to be opened and executed on a Windows computer.
-            // The file is attached to bug 59830.
-            // The Macro Virus only affects Windows computers, as it Makes a
-            // subprocess call to powershell.exe with an encoded payload
-            // The document Contains macros that execute on workbook open if macros
-            // are enabled
-            FileInfo doc = POIDataSamples.GetDocumentInstance().GetFileInfo("macro_virus.doc.do_not_open");
-            VBAMacroReader Reader = new VBAMacroReader(doc);
-            Dictionary<string, string> macros = Reader.ReadMacros();
-            Assert.IsNotNull(macros);
-            Reader.Close();
+            //test file is "609751.xls" in govdocs1
+            FileInfo f = POIDataSamples.GetSpreadSheetInstance().GetFileInfo("59830.xls");
+            VBAMacroReader r = new VBAMacroReader(f);
+            Dictionary<string, string> macros = r.ReadMacros();
+            Assert.IsNotNull(macros["Module20"]);
+            StringAssert.Contains("here start of superscripting", macros["Module20"]);
+            r.Close();
         }
 
         // This test is written as expected-to-fail and should be rewritten
@@ -332,25 +325,12 @@ namespace TestCases.POIFS.Macros
         [Test]
         public void Bug59858()
         {
-            try
-            {
-                FromFile(POIDataSamples.GetSpreadSheetInstance(), "59858.xls");
-                POITestCase.TestPassesNow(59858);
-            }
-            catch (IOException e)
-            {
-                if (Regex.Match(e.Message, "Module offset for '.+' was never Read.").Success)
-                {
-                    //e.PrintStackTrace();
-                    // NPE when Reading module.offset in VBAMacroReader.ReadMacros (approx line 258)
-                    POITestCase.SkipTest(e);
-                }
-                else
-                {
-                    // something unexpected failed
-                    throw;
-                }
-            }
+            FileInfo f = POIDataSamples.GetSpreadSheetInstance().GetFileInfo("59858.xls");
+            VBAMacroReader r = new VBAMacroReader(f);
+            Dictionary<string, string> macros = r.ReadMacros();
+            Assert.IsNotNull(macros["Sheet4"]);
+            StringAssert.Contains("intentional constituent", macros["Sheet4"]);
+            r.Close();
         }
 
         // This test is written as expected-to-fail and should be rewritten
@@ -363,6 +343,19 @@ namespace TestCases.POIFS.Macros
             Dictionary<string, string> macros = r.ReadMacros();
             Assert.IsNotNull(macros["NewMacros"]);
             StringAssert.Contains("' dirty", macros["NewMacros"]);
+            r.Close();
+        }
+
+        [Test]
+        public void Bug60273()
+        {
+            //test file derives from govdocs1 147240.xls
+            FileInfo f = POIDataSamples.GetSpreadSheetInstance().GetFileInfo("60273.xls");
+            VBAMacroReader r = new VBAMacroReader(f);
+            Dictionary<string, string> macros = r.ReadMacros();
+            Assert.IsNotNull(macros["Module1"]);
+            StringAssert.Contains("9/8/2004", macros["Module1"]);
+            r.Close();
         }
     }
 }

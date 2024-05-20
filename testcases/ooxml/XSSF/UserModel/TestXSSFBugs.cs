@@ -1495,9 +1495,7 @@ namespace TestCases.XSSF.UserModel
         /**
          * Sum across multiple workbooks
          *  eg =SUM($Sheet1.C1:$Sheet4.C1)
-         * DISABLED As we can't currently Evaluate these
          */
-        [Ignore("by poi")]
         [Test]
         public void Test48703()
         {
@@ -3449,6 +3447,34 @@ namespace TestCases.XSSF.UserModel
             Assert.IsNull(sheet.DrawingPatriarch);
             sheet = wb.GetSheetAt(4);
             Assert.IsNotNull(sheet.DrawingPatriarch);
+        }
+
+        [Test]
+        public void Test53611() 
+        {
+            IWorkbook wb = new XSSFWorkbook();
+            ISheet sheet = wb.CreateSheet("test");
+            IRow row = sheet.CreateRow(1);
+            ICell cell = row.CreateCell(1);
+            cell.SetCellValue("blabla");
+
+            row = sheet.CreateRow(4);
+            cell = row.CreateCell(7);
+            cell.SetCellValue("blabla");
+
+            // we currently only populate the dimension during writing out
+            // to avoid having to iterate all rows/cells in each add/remove of a row or cell
+            //OutputStream str = new FileOutputStream("/tmp/53611.xlsx");
+            var str = new ByteArrayOutputStream();
+            try {
+                wb.Write(str);
+            } finally {
+                str.Close();
+            }
+
+            Assert.AreEqual("B2:I5", ((XSSFSheet)sheet).GetCTWorksheet().dimension.@ref);
+
+            wb.Close();
         }
 
         [Test]
