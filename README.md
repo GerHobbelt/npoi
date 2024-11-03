@@ -13,21 +13,19 @@ What's NPOI
 <br />
 This project is the .NET version of Apache POI project. With NPOI, you can read/write Office 2003/2007 files very easily.<br />
 
-Do you interested in how NPOI get success? [please read this post](https://tonyqus.medium.com/how-npoi-succeeds-67ceb7333eb) 
+Are you interested in how NPOI get success? [please read this post](https://tonyqus.medium.com/how-npoi-succeeds-67ceb7333eb) 
 
 About Donation 关于捐款
 ============
-If you profits/benefits from NPOI and you believe it's useful, please [donate this project](https://github.com/nissl-lab/npoi/discussions/923). Thank you!
+If you profits/benefits from NPOI and you believe it's useful, please [sponsor me via Github Sponsor](https://github.com/sponsors/tonyqus) or [donate this project](https://github.com/nissl-lab/npoi/discussions/923). Thank you!
 
-如果您从NPOI受益或实现盈利，请[给该项目捐款](https://github.com/nissl-lab/npoi/discussions/923)，谢谢！
+如果您从NPOI受益或实现盈利，请通过[Github Sponsor赞助我](https://github.com/sponsors/tonyqus)或[给该项目捐款](https://github.com/nissl-lab/npoi/discussions/923)，谢谢！
 
-
-Telegram User Group
-================
-Join us on telegram: https://t.me/npoidevs
 
 Get Started with NPOI
 ============
+
+[NPOI Tutorial on Youtube](https://www.youtube.com/playlist?list=PL7J6yRMWV1ot32hsgCZJ5sI4Fp2QKovCM)
 
 [Getting Started with NPOI](https://github.com/nissl-lab/npoi/wiki/Getting-Started-with-NPOI)
 
@@ -37,22 +35,27 @@ Get Started with NPOI
 
 [NPOI Changelog](https://github.com/nissl-lab/npoi/wiki/Changelog)
 
+Telegram User Group
+================
+Join us on telegram: https://t.me/npoidevs
+
 Advantage of NPOI
 =================
-a. It's totally free to use
+a. [Huge examples (This example repo is private. You can sponsor me with NPOI example access option)](https://github.com/sponsors/tonyqus)
 
-b. Cover most features of Excel (cell style, data format, formula and so on)
+b. It's totally free to use
 
-c. Supported formats: xls, xlsx, docx.
+c. Cover most features of Excel (cell style, data format, formula and so on)
 
-d. Designed to be interface-oriented (take a look at NPOI.SS namespace)
+d. Supported formats: xls, xlsx, docx.
 
-e. Support not only export but also import
+e. Designed to be interface-oriented (take a look at NPOI.SS namespace)
 
-f. Real successful cases all over the world
+f. Support not only export but also import
 
-g. Works on both Windows and Linux 
+g. Real successful cases all over the world
 
+h. Works on both Windows and Linux 
 
 System Requirement
 ===================
