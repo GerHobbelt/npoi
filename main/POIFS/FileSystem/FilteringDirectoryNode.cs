@@ -134,10 +134,10 @@ namespace NPOI.POIFS.FileSystem
         private Entry WrapEntry(Entry entry)
         {
             String name = entry.Name;
-            if (childExcludes.ContainsKey(name) && entry is DirectoryEntry)
+            if (childExcludes.ContainsKey(name) && entry is DirectoryEntry directoryEntry)
             {
                 return new FilteringDirectoryNode(
-                      (DirectoryEntry)entry, childExcludes[name]);
+                      directoryEntry, childExcludes[name]);
             }
             return entry;
         }
@@ -156,7 +156,7 @@ namespace NPOI.POIFS.FileSystem
             return directory.CreateDirectory(name);
         }
 
-        public Util.ClassID StorageClsid
+        public HPSF.ClassID StorageClsid
         {
             get
             {

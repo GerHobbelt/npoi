@@ -23,10 +23,10 @@ namespace NPOI.HSSF.UserModel
     using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
-    using System.Reflection;
     using System.Security.Cryptography;
     using System.Text;
     using NPOI.DDF;
+    using NPOI.HPSF;
     using NPOI.HSSF.Model;
     using NPOI.HSSF.Record;
     using NPOI.POIFS.Crypt;
@@ -414,7 +414,7 @@ namespace NPOI.HSSF.UserModel
                     records.RemoveAt(k);
                     LabelSSTRecord newrec = new LabelSSTRecord();
                     int stringid =
-                        workbook.AddSSTString(new UnicodeString(oldrec.Value));
+                        workbook.AddSSTString(new HSSF.Record.UnicodeString(oldrec.Value));
 
                     newrec.Row = (oldrec.Row);
                     newrec.Column = (oldrec.Column);
@@ -1943,7 +1943,7 @@ namespace NPOI.HSSF.UserModel
                     // see also http://de.wikipedia.org/wiki/Windows_Metafile#Hinweise_zur_WMF-Spezifikation
                     if (LittleEndian.GetInt(pictureData) == unchecked((int)0x9AC6CDD7)) {
                         byte[] picDataNoHeader = new byte[pictureData.Length-22];
-                        Array.Copy(pictureData, 22, picDataNoHeader, 0, pictureData.Length-22);
+                        System.Array.Copy(pictureData, 22, picDataNoHeader, 0, pictureData.Length-22);
                         pictureData = picDataNoHeader;
                     }
                     EscherMetafileBlip blipRecordMeta = new EscherMetafileBlip();
@@ -2027,9 +2027,9 @@ namespace NPOI.HSSF.UserModel
             List<HSSFPictureData> pictures = new List<HSSFPictureData>();
             foreach (Record r in workbook.Records)
             {
-                if (r is AbstractEscherHolderRecord) {
-                    ((AbstractEscherHolderRecord)r).Decode();
-                    IList escherRecords = ((AbstractEscherHolderRecord)r).EscherRecords;
+                if (r is AbstractEscherHolderRecord record) {
+                    record.Decode();
+                    IList escherRecords = record.EscherRecords;
                     SearchForPictures(escherRecords, pictures);
                 }
             }
@@ -2056,13 +2056,11 @@ namespace NPOI.HSSF.UserModel
             while (recordIter.MoveNext())
             {
                 Object obj = recordIter.Current;
-                if (obj is EscherRecord)
+                if (obj is EscherRecord escherRecord)
                 {
-                    EscherRecord escherRecord = (EscherRecord)obj;
-
-                    if (escherRecord is EscherBSERecord)
+                    if (escherRecord is EscherBSERecord record)
                     {
-                        EscherBlipRecord blip = ((EscherBSERecord)escherRecord).BlipRecord;
+                        EscherBlipRecord blip = record.BlipRecord;
                         if (blip != null)
                         {
                             // TODO: Some kind of structure.
@@ -2225,10 +2223,10 @@ namespace NPOI.HSSF.UserModel
         private void GetAllEmbeddedObjects(HSSFShapeContainer parent, List<HSSFObjectData> objects)
         {
             foreach (HSSFShape shape in parent.Children) {
-                if (shape is HSSFObjectData) {
-                    objects.Add((HSSFObjectData) shape);
-                } else if (shape is HSSFShapeContainer) {
-                    GetAllEmbeddedObjects((HSSFShapeContainer) shape, objects);
+                if (shape is HSSFObjectData data) {
+                    objects.Add(data);
+                } else if (shape is HSSFShapeContainer container) {
+                    GetAllEmbeddedObjects(container, objects);
                 }
             }
         }
