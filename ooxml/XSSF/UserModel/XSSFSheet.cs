@@ -1145,6 +1145,27 @@ namespace NPOI.XSSF.UserModel
             }
         }
 
+        /// <summary>
+        /// Remove table references and relations
+        /// </summary>
+        /// <param name="t">table to remove</param>
+        public void RemoveTable(XSSFTable t)
+        {
+            long id = t.GetCTTable().id;
+            KeyValuePair<String, XSSFTable>? toDelete = null;
+        
+            foreach (KeyValuePair<String, XSSFTable> entry in tables) {
+                if (entry.Value.GetCTTable().id == id) 
+                    toDelete = entry;
+            }
+            if (toDelete != null)
+            {
+                RemoveRelation(GetRelationById(toDelete.Value.Key), true);
+                tables.Remove(toDelete.Value.Key);
+                toDelete.Value.Value.OnTableDelete();
+            }
+        }
+
         public ISheetConditionalFormatting SheetConditionalFormatting
         {
             get
@@ -1777,10 +1798,8 @@ namespace NPOI.XSSF.UserModel
                 {
                     width = maxColumnWidth;
                 }
-
-                IColumn col = GetColumn(column, true);
-                col.Width = width / 256;
-                col.IsBestFit = true;
+                SetColumnWidth(column, width);
+                columnHelper.SetColBestFit(column, true);
             }
         }
 
@@ -2110,19 +2129,6 @@ namespace NPOI.XSSF.UserModel
             CreateFreezePane(xSplitPos, ySplitPos, leftmostColumn, topRow);
             GetPane().state = ST_PaneState.split;
             GetPane().activePane = (ST_Pane) activePane;
-        }
-
-        /// <summary>
-        /// Returns cell comment for the specified row and column
-        /// </summary>
-        /// <param name="row">The row.</param>
-        /// <param name="column">The column.</param>
-        /// <returns>cell comment or <code>null</code> if not found</returns>
-        [Obsolete(
-            "deprecated as of 2015-11-23 (circa POI 3.14beta1). Use {@link #getCellComment(CellAddress)} instead.")]
-        public IComment GetCellComment(int row, int column)
-        {
-            return GetCellComment(new CellAddress(row, column));
         }
 
         /// <summary>
@@ -2935,22 +2941,6 @@ namespace NPOI.XSSF.UserModel
         }
 
         /// <summary>
-        /// Sets the zoom magnification for the sheet.  The zoom is expressed
-        /// as a fraction.  For example to express a zoom of 75% use 3 for the
-        /// numerator and 4 for the denominator.
-        /// </summary>
-        /// <param name="numerator">The numerator for the zoom
-        /// magnification.</param>
-        /// <param name="denominator">The denominator for the zoom
-        /// magnification.</param>
-        [Obsolete("deprecated 2015-11-23 (circa POI 3.14beta1). Use {@link #setZoom(int)} instead.")]
-        public void SetZoom(int numerator, int denominator)
-        {
-            int zoom = 100 * numerator / denominator;
-            SetZoom(zoom);
-        }
-
-        /// <summary>
         /// Window zoom magnification for current view representing percent
         /// values. Valid values range from 10 to 400. Horizontal &amp;
         /// Vertical scale toGether. For example:
@@ -3376,14 +3366,6 @@ namespace NPOI.XSSF.UserModel
             }
         }
 
-        [Obsolete("deprecated 3.14beta2 (circa 2015-12-05). Use {@link #setActiveCell(CellAddress)} instead.")]
-        public void SetActiveCell(string cellref)
-        {
-            CT_Selection ctsel = GetSheetTypeSelection();
-            ctsel.activeCell = cellref;
-            ctsel.SetSqref(new string[] { cellref });
-        }
-
         /// <summary>
         /// Enable sheet protection
         /// </summary>
@@ -3760,19 +3742,6 @@ namespace NPOI.XSSF.UserModel
                 tables.Values
             );
             return tableList;
-        }
-
-        /// <summary>
-        /// Set background color of the sheet tab
-        /// </summary>
-        /// <param name="colorIndex">the indexed color to set, must be a
-        /// constant from <see cref="IndexedColors"/></param>
-        [Obsolete("deprecated 3.15-beta2. Removed in 3.17. Use {@link #setTabColor(XSSFColor)}.")]
-        public void SetTabColor(int colorIndex)
-        {
-            IndexedColors indexedColor = IndexedColors.FromInt(colorIndex);
-            XSSFColor color = new XSSFColor(indexedColor, (Workbook as XSSFWorkbook).GetStylesSource().IndexedColors);
-            TabColor = color;
         }
 
         #region ISheet Members
@@ -4975,8 +4944,6 @@ namespace NPOI.XSSF.UserModel
             return outlineLevel;
         }
 
-        //YK: GetXYZArray() array accessors are deprecated in xmlbeans with JDK 1.5 support
-        [Obsolete]
         private short GetMaxOutlineLevelCols()
         {
             CT_Cols ctCols = worksheet.GetColsArray(0);
@@ -6305,6 +6272,97 @@ namespace NPOI.XSSF.UserModel
             return result;
         }
 
+        /**
+         * Determine the OleObject which links shapes with embedded resources
+         *
+         * @param shapeId the shape id
+         * @return the CTOleObject of the shape
+         */
+        public CT_OleObject ReadOleObject(long shapeId)
+        {
+            if (!GetCTWorksheet().IsSetOleObjects())
+            {
+                return null;
+            }
+
+            CT_OleObjects objs = GetCTWorksheet().oleObjects;
+            CT_OleObject coo = null;
+            foreach(var obj in objs.oleObject)
+            {
+                if((long) obj.shapeId!=shapeId)
+                {
+                    continue;
+                }
+                coo = obj;
+                if(coo.objectPr!=null)
+                {
+                    break;
+                }
+            }
+
+            return coo;
+            // we use a XmlCursor here to handle oleObject with-/out AlternateContent wrappers
+            //String xquery = "declare namespace p='" + XSSFRelation.NS_SPREADSHEETML + "' .//p:oleObject";
+            //XmlCursor cur = GetCTWorksheet().oleObjects.newCursor();
+            //try
+            //{
+            //    cur.selectPath(xquery);
+            //    CT_OleObject coo = null;
+            //    while (cur.toNextSelection())
+            //    {
+            //        String sId = cur.getAttributeText(new QName(null, "shapeId"));
+            //        if (sId == null || long.Parse(sId) != shapeId)
+            //        {
+            //            continue;
+            //        }
+
+            //        XmlObject xObj = cur.getObject();
+            //        if (xObj is CT_OleObject) {
+            //            // the unusual case ...
+            //            coo = (CT_OleObject)xObj;
+            //        } else
+            //        {
+            //            XMLStreamReader reader = cur.newXMLStreamReader();
+            //            try
+            //            {
+            //                CT_OleObjects coos = CTOleObjects.Factory.parse(reader);
+            //                if (coos.SizeOfOleObjectArray() == 0)
+            //                {
+            //                    continue;
+            //                }
+            //                coo = coos.GetOleObjectArray(0);
+            //            }
+            //            catch (XmlException e)
+            //            {
+            //                logger.log(POILogger.INFO, "can't parse CTOleObjects", e);
+            //            }
+            //            finally
+            //            {
+            //                try
+            //                {
+            //                    reader.close();
+            //                }
+            //                catch (XMLStreamException e)
+            //                {
+            //                    logger.Log(POILogger.INFO, "can't close reader", e);
+            //                }
+            //            }
+            //        }
+
+            //        // there are choice and fallback OleObject ... we prefer the one having the objectPr element,
+            //        // which is in the choice element
+            //        if (cur.toChild(XSSFRelation.NS_SPREADSHEETML, "objectPr"))
+            //        {
+            //            break;
+            //        }
+            //    }
+            //    return (coo == null) ? null : coo;
+            //}
+            //finally
+            //{
+            //    cur.dispose();
+            //}
+        }
         #endregion
 
         #region Helper classes
@@ -6553,6 +6611,20 @@ lblforbreak:
         public CellRangeAddressList GetCells(string cellranges)
         {
             return CellRangeAddressList.Parse(cellranges);
+        }
+
+        /// <summary>
+        /// called when a sheet is being deleted/removed from a workbook, to clean up relations and other document pieces tied to the sheet
+        /// </summary>
+        internal void OnSheetDelete() {
+            foreach (RelationPart part in RelationParts) {
+                if (part.DocumentPart is XSSFTable) {
+                    // call table delete
+                    RemoveTable((XSSFTable) part.DocumentPart);
+                    continue;
+                }
+                RemoveRelation(part.DocumentPart, true);
+            }
         }
     }
 }
