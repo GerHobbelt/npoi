@@ -7353,9 +7353,9 @@ namespace NPOI.OpenXmlFormats.Spreadsheet
             XmlHelper.WriteAttribute(sw, "sqref", this.sqref);
             sw.Write(">");
             if (this.formula1 != null)
-                sw.Write(string.Format("<formula1><![CDATA[{0}]]></formula1>", XmlHelper.EncodeCDATAContent(this.formula1)));
+                sw.Write(string.Format("<formula1><![CDATA[{0}]]></formula1>", this.formula1));
             if (this.formula2 != null)
-                sw.Write(string.Format("<formula2><![CDATA[{0}]]></formula2>", XmlHelper.EncodeCDATAContent(this.formula2)));
+                sw.Write(string.Format("<formula2><![CDATA[{0}]]></formula2>", this.formula2));
 
             sw.Write(string.Format("</{0}>", nodeName));
         }
@@ -8451,6 +8451,13 @@ namespace NPOI.OpenXmlFormats.Spreadsheet
                     ctObj.objectPrField = CT_ObjectPr.Parse(childNode, namespaceManager);
             }
             return ctObj;
+        }
+
+        internal void WriteFallback(StreamWriter sw)
+        {
+            sw.Write("<mc:Fallback>");
+            sw.Write($"<oleObject progId=\"{progId}\" dvAspect=\"{this.dvAspect.ToString()}\" shapeId=\"{shapeId}\" r:id=\"{id}\" />");
+            sw.Write("</mc:Fallback>");
         }
 
         internal void Write(StreamWriter sw, string nodeName)
@@ -11275,6 +11282,7 @@ namespace NPOI.OpenXmlFormats.Spreadsheet
     [XmlType(Namespace = "http://schemas.openxmlformats.org/spreadsheetml/2006/main")]
     public class CT_OleObjects
     {
+        private bool inAlternateContent = false;
         public static CT_OleObjects Parse(XmlNode node, XmlNamespaceManager namespaceManager)
         {
             if (node == null)
@@ -11283,7 +11291,13 @@ namespace NPOI.OpenXmlFormats.Spreadsheet
             ctObj.oleObject = new List<CT_OleObject>();
             foreach (XmlNode childNode in node.ChildNodes)
             {
-                if (childNode.LocalName == "oleObject")
+                ctObj.inAlternateContent = true;
+                if(childNode.LocalName == "AlternateContent")
+                {
+                    ctObj.inAlternateContent = true;
+                    ctObj.oleObject.Add(CT_OleObject.Parse(childNode.ChildNodes[0].ChildNodes[0], namespaceManager));
+                }
+                else if (childNode.LocalName == "oleObject")
                     ctObj.oleObject.Add(CT_OleObject.Parse(childNode, namespaceManager));
             }
             if (ctObj.oleObject.Count == 0)
@@ -11297,9 +11311,26 @@ namespace NPOI.OpenXmlFormats.Spreadsheet
             sw.Write(">");
             if (this.oleObject != null)
             {
+                if(inAlternateContent)
+                {
+                    sw.Write("<mc:AlternateContent xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\">");
+                }
                 foreach (CT_OleObject x in this.oleObject)
                 {
+                    if(inAlternateContent)
+                    {
+                        sw.Write("<mc:Choice Requires=\"x14\">");
+                    }
                     x.Write(sw, "oleObject");
+                    if(inAlternateContent)
+                    {
+                        sw.Write("</mc:Choice>");
+                        x.WriteFallback(sw);
+                    }
+                }
+                if(inAlternateContent)
+                {
+                    sw.Write("</mc:AlternateContent>");
                 }
             }
             sw.Write(string.Format("</{0}>", nodeName));
@@ -11322,6 +11353,17 @@ namespace NPOI.OpenXmlFormats.Spreadsheet
             {
                 this.oleObjectField = value;
             }
+        }
+
+        public CT_OleObject AddNewOleObject()
+        {
+            if(this.oleObjectField==null)
+            {
+                this.oleObjectField = new List<CT_OleObject>();
+            }
+            CT_OleObject obj = new CT_OleObject();
+            this.oleObjectField.Add(obj);
+            return obj;
         }
     }
 

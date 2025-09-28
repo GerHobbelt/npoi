@@ -1415,14 +1415,14 @@ namespace TestCases.XSSF.UserModel
 
             // Sheet 2 has comments
             ClassicAssert.IsNotNull(sh2.GetCommentsTable(false));
-            ClassicAssert.AreEqual(1, sh2.GetCommentsTable(false).GetNumberOfComments());
+            ClassicAssert.AreEqual(1, sh2.GetCommentsTable(false).NumberOfComments);
 
             // Sheet 1 doesn't (yet)
             ClassicAssert.IsNull(sh1.GetCommentsTable(false));
 
             // Try to add comments to Sheet 1
             ICreationHelper factory = wb1.GetCreationHelper();
-            IDrawing Drawing = sh1.CreateDrawingPatriarch();
+            IDrawing<IShape> Drawing = sh1.CreateDrawingPatriarch();
 
             IClientAnchor anchor = factory.CreateClientAnchor();
             anchor.Col1 = (0);
@@ -1464,10 +1464,10 @@ namespace TestCases.XSSF.UserModel
 
             // Check the comments
             ClassicAssert.IsNotNull(sh2.GetCommentsTable(false));
-            ClassicAssert.AreEqual(1, sh2.GetCommentsTable(false).GetNumberOfComments());
+            ClassicAssert.AreEqual(1, sh2.GetCommentsTable(false).NumberOfComments);
 
             ClassicAssert.IsNotNull(sh1.GetCommentsTable(false));
-            ClassicAssert.AreEqual(2, sh1.GetCommentsTable(false).GetNumberOfComments());
+            ClassicAssert.AreEqual(2, sh1.GetCommentsTable(false).NumberOfComments);
 
             wb2.Close();
         }
@@ -2578,7 +2578,7 @@ namespace TestCases.XSSF.UserModel
                 ClassicAssert.IsNotNull(orig);
 
                 ISheet sheet = wb.CloneSheet(0);
-                IDrawing Drawing = sheet.CreateDrawingPatriarch();
+                IDrawing<IShape> Drawing = sheet.CreateDrawingPatriarch();
                 foreach (XSSFShape shape in ((XSSFDrawing)Drawing).GetShapes())
                 {
                     if (shape is XSSFPicture)

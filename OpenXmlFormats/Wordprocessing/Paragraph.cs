@@ -6,6 +6,7 @@ using NPOI.OpenXmlFormats.Shared;
 using System.IO;
 using NPOI.OpenXml4Net.Util;
 using System.Collections;
+using System.CodeDom;
 
 namespace NPOI.OpenXmlFormats.Wordprocessing
 {
@@ -171,12 +172,16 @@ namespace NPOI.OpenXmlFormats.Wordprocessing
                 }
                 else if (childNode.LocalName == "fldSimple")
                 {
-                    ctObj.Items.Add(CT_SimpleField.Parse(childNode, namespaceManager));
+                    var sf = CT_SimpleField.Parse(childNode, namespaceManager);
+                    sf.parent = ctObj;
+                    ctObj.Items.Add(sf);
                     ctObj.ItemsElementName.Add(ParagraphItemsChoiceType.fldSimple);
                 }
                 else if (childNode.LocalName == "hyperlink")
                 {
-                    ctObj.Items.Add(CT_Hyperlink1.Parse(childNode, namespaceManager));
+                    var hl=CT_Hyperlink1.Parse(childNode, namespaceManager);
+                    hl.parent = ctObj;
+                    ctObj.Items.Add(hl);
                     ctObj.ItemsElementName.Add(ParagraphItemsChoiceType.hyperlink);
                 }
                 else if (childNode.LocalName == "ins")
@@ -247,7 +252,40 @@ namespace NPOI.OpenXmlFormats.Wordprocessing
         {
             return this.rsidRField != null && rsidRField.Length > 0;
         }
-
+        public void RemoveHyperlink(CT_Hyperlink1 hl)
+        {
+            int index=-1;
+            for(int i = 0; i<Items.Count; i++)
+            {
+                if(Items[i].Equals(hl))
+                {
+                    index=i;
+                    break;
+                }
+            }
+            if(index>=0)
+            {
+                Items.RemoveAt(index);
+                ItemsElementName.RemoveAt(index);
+            }
+        }
+        public void RemoveSimpleField(CT_SimpleField sf)
+        {
+            int index=-1;
+            for(int i = 0; i<Items.Count; i++)
+            {
+                if(Items[i].Equals(sf))
+                {
+                    index=i;
+                    break;
+                }
+            }
+            if(index>=0)
+            {
+                Items.RemoveAt(index);
+                ItemsElementName.RemoveAt(index);
+            }
+        }
         internal void Write(StreamWriter sw, string nodeName)
         {
             sw.Write(string.Format("<w:{0}", nodeName));
@@ -1173,10 +1211,23 @@ namespace NPOI.OpenXmlFormats.Wordprocessing
                 this.numPr = new CT_NumPr();
             return this.numPr;
         }
+        public CT_SectPr AddNewSectPr()
+        {
+            if(this.sectPrField==null)
+            { 
+                this.sectPrField = new CT_SectPr();
+            }
+            return this.sectPrField;
+        }
 
         public bool IsSetSpacing()
         {
             return this.spacing != null;
+        }
+
+        public bool IsSetSectPr()
+        { 
+            return this.sectPr != null;
         }
     }
 
@@ -2990,6 +3041,18 @@ namespace NPOI.OpenXmlFormats.Wordprocessing
         public bool IsSetTitlePg()
         {
             return this.titlePgField != null;
+        }
+
+        public bool IsSetPgSz()
+        { 
+            return this.pgSzField != null;
+        }
+
+        public CT_PageSz AddNewPgSz()
+        {
+            if(this.pgSzField == null)
+                this.pgSzField = new CT_PageSz();
+            return this.pgSzField;
         }
 
         public CT_OnOff AddNewTitlePg()

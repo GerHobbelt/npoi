@@ -45,8 +45,18 @@ namespace NPOI.Util
     /// </summary>
     public static class StringUtil
     {
+        static StringUtil()
+        {
+        #if NETSTANDARD2_1 || NET6_0_OR_GREATER || NETSTANDARD2_0
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            BIG5 = Encoding.GetEncoding("big5");
+            WIN_1252 = Encoding.GetEncoding("windows-1252");
+        #endif 
+        }
         private static Encoding ISO_8859_1 = Encoding.GetEncoding("ISO-8859-1");
         private static Encoding UTF16LE = Encoding.Unicode;
+        public static Encoding BIG5;
+        public static Encoding WIN_1252;
         private static Dictionary<int, int> msCodepointToUnicode;
         /**     
          *  Constructor for the StringUtil object     
@@ -894,6 +904,24 @@ namespace NPOI.Util
             {
                 throw new Exception("String was not well-formed UTF-16.");
             }
+        }
+
+        public static String Trim(string value)
+        {
+            int end = value.Length;
+            int st = 0;
+            //int off = offset;      /* avoid getfield opcode */
+            char[] val = value.ToCharArray();    /* avoid getfield opcode */
+
+            while((st < end) && (val[st] <= ' '))
+            {
+                st++;
+            }
+            while((st < end) && (val[end - 1] <= ' '))
+            {
+                end--;
+            }
+            return ((st > 0) || (end < value.Length)) ? value.Substring(st, end - st) : value;
         }
     }
 }

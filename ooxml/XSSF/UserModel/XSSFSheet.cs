@@ -950,7 +950,7 @@ namespace NPOI.XSSF.UserModel
                     return false;
                 }
 
-                return sheetComments.GetNumberOfComments() > 0;
+                return sheetComments.NumberOfComments > 0;
             }
         }
 
@@ -963,7 +963,7 @@ namespace NPOI.XSSF.UserModel
                     return 0;
                 }
 
-                return sheetComments.GetNumberOfComments();
+                return sheetComments.NumberOfComments;
             }
         }
 
@@ -1799,7 +1799,7 @@ namespace NPOI.XSSF.UserModel
                     width = maxColumnWidth;
                 }
                 SetColumnWidth(column, width);
-                columnHelper.SetColBestFit(column, true);
+                GetColumnHelper().SetColBestFit(column, true);
             }
         }
 
@@ -1884,7 +1884,7 @@ namespace NPOI.XSSF.UserModel
         /// Contains a Drawing - return that.
         /// </summary>
         /// <returns>a SpreadsheetML Drawing</returns>
-        public IDrawing CreateDrawingPatriarch()
+        public IDrawing<IShape> CreateDrawingPatriarch()
         {
             OpenXmlFormats.Spreadsheet.CT_Drawing ctDrawing = GetCTDrawing();
             if(ctDrawing != null)
@@ -3746,7 +3746,7 @@ namespace NPOI.XSSF.UserModel
 
         #region ISheet Members
 
-        public IDrawing DrawingPatriarch
+        public IDrawing<IShape> DrawingPatriarch
         {
             get
             {
@@ -4138,7 +4138,7 @@ namespace NPOI.XSSF.UserModel
             StylesTable styles = ((XSSFWorkbook) dest).GetStylesSource();
             if(copyStyle && Workbook.NumberOfFonts > 0)
             {
-                foreach(XSSFFont font in ((XSSFWorkbook) Workbook).GetStylesSource().GetFonts())
+                foreach(XSSFFont font in ((XSSFWorkbook) Workbook).GetStylesSource().Fonts)
                 {
                     styles.PutFont(font);
                 }
@@ -5931,7 +5931,7 @@ namespace NPOI.XSSF.UserModel
             XSSFDrawing sheetDrawing = GetDrawingPatriarch();
             if(sheetDrawing != null)
             {
-                IDrawing destDraw = destSheet.CreateDrawingPatriarch();
+                IDrawing<IShape> destDraw = destSheet.CreateDrawingPatriarch();
                 IList<POIXMLDocumentPart> sheetPictures = sheetDrawing.GetRelations();
                 Dictionary<string, uint> pictureIdMapping = new Dictionary<string, uint>();
                 foreach(IEG_Anchor anchor in sheetDrawing.GetCTDrawing().CellAnchors)
