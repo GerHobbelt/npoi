@@ -19,18 +19,17 @@
 namespace NPOI.XWPF.UserModel
 {
     using System;
-    using System.IO;
-    using NPOI.Util;
     using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Xml;
+
+    using NPOI.Util;
     using NPOI.OpenXml4Net.OPC;
     using NPOI.OpenXmlFormats.Wordprocessing;
-    using System.Xml;
     using NPOI.WP.UserModel;
     using NPOI.XWPF.Model;
-    using System.Xml.Serialization;
-    using System.Diagnostics;
     using NPOI.OOXML.XWPF.Util;
-    using System.Linq;
     using NPOI.POIFS.Crypt;
 
     /**
@@ -449,10 +448,8 @@ namespace NPOI.XWPF.UserModel
 
         public XWPFHyperlink GetHyperlinkByID(String id)
         {
-            IEnumerator<XWPFHyperlink> iter = hyperlinks.GetEnumerator();
-            while (iter.MoveNext())
+            foreach (XWPFHyperlink link in hyperlinks)
             {
-                XWPFHyperlink link = iter.Current;
                 if (link.Id.Equals(id))
                     return link;
             }
@@ -462,16 +459,11 @@ namespace NPOI.XWPF.UserModel
 
         public XWPFFootnote GetFootnoteByID(int id)
         {
-            if (footnotes == null) return null;
-            return footnotes.GetFootnoteById(id);
+            return footnotes?.GetFootnoteById(id);
         }
-        public Dictionary<int, XWPFFootnote> Endnotes
-        {
-            get
-            {
-                return endnotes;
-            }
-        }
+
+        public Dictionary<int, XWPFFootnote> Endnotes => endnotes;
+
         public XWPFFootnote GetEndnoteByID(int id)
         {
             if (endnotes == null || !endnotes.TryGetValue(id, out XWPFFootnote byId)) 
@@ -483,7 +475,7 @@ namespace NPOI.XWPF.UserModel
         {
             if (footnotes == null)
             {
-                return new List<XWPFFootnote>();
+                return [];
             }
             return footnotes.GetFootnotesList();
         }
@@ -1589,18 +1581,15 @@ namespace NPOI.XWPF.UserModel
              * Try to find PictureData with this Checksum. Create new, if none
              * exists.
              */
-            List<XWPFPictureData> xwpfPicDataList = null;
-            if(packagePictures.TryGetValue(Checksum, out List<XWPFPictureData> picture))
-               xwpfPicDataList = picture;
-            if (xwpfPicDataList != null)
+
+            if (packagePictures.TryGetValue(Checksum, out List<XWPFPictureData> xwpfPicDataList))
             {
-                IEnumerator<XWPFPictureData> iter = xwpfPicDataList.GetEnumerator();
-                while (iter.MoveNext() && xwpfPicData == null)
+                foreach (XWPFPictureData curElem in xwpfPicDataList)
                 {
-                    XWPFPictureData curElem = iter.Current;
                     if (Arrays.Equals(pictureData, curElem.Data))
                     {
                         xwpfPicData = curElem;
+                        break;
                     }
                 }
             }
@@ -1881,47 +1870,76 @@ namespace NPOI.XWPF.UserModel
         {
             return this;
         }
-        private void FindAndReplaceTextInParagraph(XWPFParagraph paragraph, string oldValue, string newValue)
+
+        private static void FindAndReplaceTextInParagraph(XWPFParagraph paragraph, string oldValue, string newValue, int startPos = 0)
         {
-            var index = paragraph?.Text.IndexOf(oldValue) ?? -1;
-            if (index != -1)
+            if(paragraph == null)
+                return;
+
+            string paragraphText = string.Concat(paragraph.Runs.Select(p => p.Text));
+
+            var startIndex = paragraphText.IndexOf(oldValue, startPos);
+            if(startIndex == -1)
+                return;
+
+            int firstRun = -1;
+            int firstIndex = -1;
+
+            int lastRun = -1;
+            int lastIndex = -1;
+
+            int processedRuns = 0;
+            int processedChars = 0;
+
+            for(; processedRuns < paragraph.Runs.Count; processedRuns++)
             {
-                int? firstIndex = null;
-                int? lastIndex = null;
-                for (var i = 0; i < paragraph.Runs.Count; ++i)
+                var text = paragraph.Runs[processedRuns].Text;
+                if(processedChars + text.Length > startIndex)
                 {
-                    if (index < paragraph.Runs[i].Text.Length)
-                    {
-                        if (-index <= oldValue.Length)
-                        {
-                            if (firstIndex == null)
-                            {
-                                firstIndex = i;
-                            }
-                        }
-                        else
-                        {
-                            lastIndex = i;
-                            break;
-                        }
-                    }
-                    index -= paragraph.Runs[i].Text.Length;
+                    firstRun = processedRuns;
+                    firstIndex = startIndex - processedChars;
+                    break;
                 }
-                if (lastIndex == null)
-                {
-                    lastIndex = paragraph.Runs.Count - 1;
-                }
-                var newText = String.Concat(paragraph.Runs.Skip(firstIndex ?? 0).Take((lastIndex ?? 0) - (firstIndex ?? 0) + 1).Select(_ => _.Text));
-                newText = newText.Replace(oldValue, newValue);
-                paragraph.Runs[firstIndex ?? 0].SetText(newText);
-                for (var i = (firstIndex ?? 0) + 1; i <= lastIndex; ++i)
-                {
-                    paragraph.RemoveRun((firstIndex ?? 0) + 1);
-                }
+
+                processedChars += text.Length;
             }
+
+            int endIndex = startIndex + oldValue.Length;
+
+            for(; processedRuns < paragraph.Runs.Count; processedRuns++)
+            {
+                var text = paragraph.Runs[processedRuns].Text;
+                if(processedChars + text.Length > endIndex)
+                {
+                    lastRun = processedRuns;
+                    lastIndex = endIndex - processedChars;
+                    break;
+                }
+
+                processedChars += text.Length;
+            }
+
+            var initialFirstText = paragraph.Runs[firstRun].Text;
+            if(firstRun == lastRun)
+            {
+                paragraph.Runs[firstRun].SetText(initialFirstText.Substring(0, firstIndex) + newValue + initialFirstText.Substring(lastIndex));
+            }
+            else
+            {
+                paragraph.Runs[firstRun].SetText(initialFirstText.Substring(0, firstIndex) + newValue);
+
+                if(lastRun != -1)
+                    paragraph.Runs[lastRun].SetText(paragraph.Runs[lastRun].Text.Substring(lastIndex));
+            }
+
+            int removeTo = lastRun == -1 ? paragraph.Runs.Count : lastRun;
+            for(int i = firstRun + 1; i < removeTo; i++)
+                paragraph.RemoveRun(firstRun + 1);
+
+            FindAndReplaceTextInParagraph(paragraph, oldValue, newValue, startIndex + newValue.Length);
         }
 
-        private void FindAndReplaceTextInTable(XWPFTable table, string oldValue, string newValue)
+        private static void FindAndReplaceTextInTable(XWPFTable table, string oldValue, string newValue)
         {
             foreach (var row in table.Rows)
             {

@@ -26,7 +26,7 @@ namespace NPOI.HPSF
     using System.Collections.Generic;
     using System.Linq;
     using System.IO;
-    using System.Text;
+    using Cysharp.Text;
 
     /// <summary>
     /// Represents a section in a {@link PropertySet}.
@@ -437,7 +437,7 @@ namespace NPOI.HPSF
         /// @see Variant
         public void SetProperty(Property p)
         {
-            Property old = properties.ContainsKey(p.ID)? properties[p.ID] : null;
+            Property old = properties.TryGetValue(p.ID, out Property value) ? value : null;
             if(old == null || !old.Equals(p))
             {
                 properties[p.ID] = p;
@@ -811,7 +811,7 @@ namespace NPOI.HPSF
         /// <param name="pa">The property array.</param>
         /// <param name="i">The index of the field to be removed.</param>
         /// <return>compactified array.</return>
-        private Property[] Remove(Property[] pa, int i)
+        private static Property[] Remove(Property[] pa, int i)
         {
             Property[] h = new Property[pa.Length - 1];
             if(i > 0)
@@ -955,7 +955,7 @@ namespace NPOI.HPSF
         /// <param name="codepage">The codepage to be used to write the dictionary items.</param>
         /// <return>number of bytes written</return>
         /// <exception name="IOException">if an I/O exception occurs.</exception>
-        private static int WriteDictionary(Stream out1, IDictionary dictionary, int codepage)
+        private static int WriteDictionary(MemoryStream out1, IDictionary dictionary, int codepage)
         {
             int length = TypeWriter.WriteUIntToStream(out1, (uint)dictionary.Count);
             foreach(DictionaryEntry ls in dictionary)
@@ -1081,7 +1081,7 @@ namespace NPOI.HPSF
         /// @see Object#toString()
         public override String ToString()
         {
-            StringBuilder b = new StringBuilder();
+           using var b= ZString.CreateStringBuilder();
             Property[] pa = Properties;
             b.Append(GetType().Name);
             b.Append('[');

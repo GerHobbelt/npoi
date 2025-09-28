@@ -184,15 +184,16 @@ namespace NPOI.SS.Formula.Functions
             }
         }
 
-
-        public static ValueVector CreateRowVector(TwoDEval tableArray, int relativeRowIndex)
+        public static RowVector CreateRowVector(TwoDEval tableArray, int relativeRowIndex)
         {
             return new RowVector((AreaEval)tableArray, relativeRowIndex);
         }
-        public static ValueVector CreateColumnVector(TwoDEval tableArray, int relativeColumnIndex)
+
+        public static ColumnVector CreateColumnVector(TwoDEval tableArray, int relativeColumnIndex)
         {
             return new ColumnVector((AreaEval)tableArray, relativeColumnIndex);
         }
+
         /**
          * @return <c>null</c> if the supplied area is neither a single row nor a single colum
          */
@@ -438,7 +439,7 @@ namespace NPOI.SS.Formula.Functions
                 // zero Is FALSE, everything else Is TRUE
                 return 0.0 != nve.NumberValue;
             }
-            throw new Exception("Unexpected eval type (" + valEval.GetType().Name + ")");
+            throw new Exception("Unexpected eval type (" + valEval + ")");
         }
 
         public static int lookupFirstIndexOfValue(ValueEval lookupValue, ValueVector vector, bool isRangeLookup)
