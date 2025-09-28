@@ -34,6 +34,13 @@ namespace NPOI.XSSF.UserModel.Charts
             }
         }
 
+        public override CT_ShapeProperties Line
+        {
+            get
+            {
+                return ctCatAx.spPr;
+            }
+        }
         protected override CT_AxPos GetCTAxPos()
         {
             return ctCatAx.axPos;
@@ -88,6 +95,11 @@ namespace NPOI.XSSF.UserModel.Charts
             ctCatAx.auto = au;
         }
 
+        public override CT_ChartLines GetMajorGridLines()
+        {
+            return ctCatAx.majorGridlines;
+        }
+
         private void createAxis(long id, AxisPosition pos)
         {
             ctCatAx = chart.GetCTChart().plotArea.AddNewCatAx();
@@ -108,6 +120,11 @@ namespace NPOI.XSSF.UserModel.Charts
             this.IsVisible = true;
             this.MajorTickMark=(AxisTickMark.Cross);
             this.MinorTickMark=(AxisTickMark.None);
+        }
+
+        public override bool HasNumberFormat()
+        {
+            return ctCatAx.IsSetNumFmt();
         }
     }
 }

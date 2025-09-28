@@ -53,9 +53,18 @@ namespace NPOI.XSSF.UserModel.Charts
             }
         }
 
+        public override CT_ShapeProperties Line
+        {
+            get
+            {
+                return ctValAx.spPr;
+            }
+        
+        }
+
         public void SetCrossBetween(AxisCrossBetween crossBetween)
         {
-            ctValAx.crossBetween.val= fromCrossBetween(crossBetween);
+            ctValAx.crossBetween.val= FromCrossBetween(crossBetween);
         }
 
         public AxisCrossBetween GetCrossBetween()
@@ -106,6 +115,10 @@ namespace NPOI.XSSF.UserModel.Charts
         {
             return ctValAx.crosses;
         }
+        public override CT_ChartLines GetMajorGridLines()
+        {
+            return ctValAx.majorGridlines;
+        }
 
         public override void CrossAxis(IChartAxis axis)
         {
@@ -135,7 +148,7 @@ namespace NPOI.XSSF.UserModel.Charts
             MinorTickMark=(AxisTickMark.None);
         }
 
-        private static ST_CrossBetween fromCrossBetween(AxisCrossBetween crossBetween)
+        private static ST_CrossBetween FromCrossBetween(AxisCrossBetween crossBetween)
         {
             switch (crossBetween)
             {
@@ -155,6 +168,11 @@ namespace NPOI.XSSF.UserModel.Charts
                 default:
                     throw new ArgumentException();
             }
+        }
+
+        public override bool HasNumberFormat()
+        {
+            return ctValAx.IsSetNumFmt();
         }
     }
 }
